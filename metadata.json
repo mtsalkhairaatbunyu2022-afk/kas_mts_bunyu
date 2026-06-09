@@ -1,5 +1,5 @@
 {
-  "name": "Tabungan & Infaq Tracker",
+  "name": "KAS MTS BUNYU",
   "description": "Aplikasi pencatatan iuran bulanan siswa modern, otomatis menghitung rincian pembayaran per bulan.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

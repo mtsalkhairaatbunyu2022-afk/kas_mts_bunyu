@@ -20,7 +20,9 @@ import {
   Upload,
   FileSpreadsheet,
   Table,
-  CircleDollarSign
+  CircleDollarSign,
+  Smartphone,
+  Laptop
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -112,6 +114,58 @@ export default function App() {
     setInputBulanDibayar(guessedMonth);
     setInputTahunDibayar(String(today.getFullYear()));
   }, []);
+
+  // --- PWA INSTALL PROMPT STUFF & STATES ---
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+
+    // Check display mode
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true) {
+      setIsAppInstalled(true);
+    }
+
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setDeferredPrompt(null);
+      setNotification('Aplikasi KAS MTS BUNYU berhasil dipasang!');
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) {
+      triggerAlert(
+        'Petunjuk Pasang / Install Aplikasi',
+        'Untuk memasang aplikasi "KAS MTS BUNYU" agar bisa diakses langsung dari layar utama HP atau Laptop:\n\n' +
+        '1. DI HP ANDROID / LAPTOP (Chrome/Edge):\n' +
+        '   - Klik tombol titik tiga di kanan atas browser Anda.\n' +
+        '   - Klik menu "Install Aplikasi" atau "Pasang Aplikasi" atau "Tambahkan ke Layar Utama".\n\n' +
+        '2. DI IPHONE / IPAD (Safari):\n' +
+        '   - Klik tombol "Berbagi / Share" (ikon kotak dengan panah ke atas) di luar menu ini (browser).\n' +
+        '   - Gulir ke bawah lalu ketuk "Tambahkan ke Layar Utama" (Add to Home Screen).\n\n' +
+        'Setelah dipasang, aplikasi ini dapat dibuka tanpa koneksi internet (Offline), dan langsung full-screen bersih tanpa ribbon/baris browser web.'
+      );
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User accepted prompt? ${outcome}`);
+    setDeferredPrompt(null);
+  };
 
   // Sync state helpers
   const saveSiswa = (siswaList: Siswa[]) => {
@@ -544,9 +598,9 @@ export default function App() {
               <GraduationCap className="w-6 h-6" />
             </span>
             <div>
-              <h1 className="font-extrabold text-base sm:text-lg text-slate-900 flex flex-wrap items-center gap-2">
-                Aplikasi Iuran & Kas Siswa
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">MTS Al-Khairaat Bunyu</span>
+              <h1 className="font-extrabold text-lg sm:text-xl text-slate-900 flex flex-wrap items-center gap-2 tracking-tight">
+                KAS MTS BUNYU
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">MTS AL-KHAIRAAT BUNYU</span>
               </h1>
               <p className="text-xs text-slate-500">Pembukuan Transparansi Infaq Iuran, Rincian Pengeluaran, & Akumulasi Saldo Sisa Kas</p>
             </div>
@@ -574,6 +628,17 @@ export default function App() {
               </button>
             </div>
             
+            {/* Elegant PWA Install Button */}
+            {!isAppInstalled && (
+              <button
+                onClick={handleInstallApp}
+                className="py-1.5 px-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shadow-indigo-600/10"
+                title="Pasang Aplikasi KAS MTS BUNYU di HP atau Laptop"
+              >
+                <Smartphone className="w-3.5 h-3.5 animate-pulse" /> Pasang Aplikasi
+              </button>
+            )}
+
             <button
               onClick={handleExportExcel}
               className="py-1.5 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shadow-emerald-600/10"

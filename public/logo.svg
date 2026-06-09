@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Al-Khairaat Logo Replica -->
+  <!-- Pentagon background (Kuning) -->
+  <polygon points="256,80 420,200 356,420 156,420 92,200" fill="#fffb00" stroke="#000000" stroke-width="8" stroke-linejoin="round" />
+  <!-- Inner pentagon border line -->
+  <polygon points="256,92 408,204 348,408 164,408 104,204" fill="none" stroke="#000000" stroke-width="3" stroke-linejoin="round" />
+
+  <!-- Crescent moon (Bulan Sabit) -->
+  <path d="M 166,280 C 166,396 346,396 346,280 C 346,330 300,360 256,360 C 212,360 166,330 166,280 Z" fill="#ffffff" stroke="#000000" stroke-width="4" stroke-linejoin="round" />
+
+  <!-- Mosque Minaret on the Left of the dome -->
+  <rect x="210" y="210" width="16" height="110" fill="#ffffff" stroke="#000000" stroke-width="4" />
+  <rect x="206" y="240" width="24" height="6" fill="#ffffff" stroke="#000000" stroke-width="3" />
+  <path d="M 210,210 Q 218,190 226,210 Z" fill="#ffffff" stroke="#000000" stroke-width="4" />
+  <line x1="218" y1="190" x2="218" y2="180" stroke="#000000" stroke-width="3" />
+  <circle cx="218" cy="177" r="4" fill="#ffffff" stroke="#000000" stroke-width="2" />
+
+  <!-- Mosque Dome in the middle -->
+  <rect x="230" y="235" width="52" height="85" fill="#a1a1aa" stroke="#000000" stroke-width="4" />
+  <!-- Bricks texture -->
+  <line x1="230" y1="255" x2="282" y2="255" stroke="#000000" stroke-width="2" />
+  <line x1="230" y1="275" x2="282" y2="275" stroke="#000000" stroke-width="2" />
+  <line x1="230" y1="295" x2="282" y2="295" stroke="#000000" stroke-width="2" />
+  <line x1="247" y1="235" x2="247" y2="255" stroke="#000000" stroke-width="2" />
+  <line x1="265" y1="235" x2="265" y2="255" stroke="#000000" stroke-width="2" />
+  <line x1="256" y1="255" x2="256" y2="275" stroke="#000000" stroke-width="2" />
+  <line x1="242" y1="275" x2="242" y2="295" stroke="#000000" stroke-width="2" />
+  <line x1="270" y1="275" x2="270" y2="295" stroke="#000000" stroke-width="2" />
+
+  <!-- Arched door on the pillar -->
+  <path d="M 244,320 L 244,285 Q 256,270 268,285 L 268,320 Z" fill="#ffffff" stroke="#000000" stroke-width="4" />
+
+  <!-- The main Green Dome (Kubah) -->
+  <path d="M 230,235 C 230,170 282,170 282,235 Z" fill="#008a3b" stroke="#000000" stroke-width="4" />
+  <!-- Vertical dome lines/stripes -->
+  <path d="M 243,235 C 243,190 256,180 256,235" fill="none" stroke="#000000" stroke-width="2" />
+  <path d="M 269,235 C 269,190 256,180 256,235" fill="none" stroke="#000000" stroke-width="2" />
+
+  <!-- Moon Crescent and Star on top of green dome -->
+  <line x1="256" y1="180" x2="256" y2="162" stroke="#000000" stroke-width="3" />
+  <circle cx="256" cy="160" r="4" fill="#008a3b" stroke="#000000" stroke-width="2" />
+  <path d="M 244,142 C 244,158 268,158 268,142 C 268,150 258,152 256,152 C 254,152 244,150 244,142 Z" fill="#ffffff" stroke="#000000" stroke-width="2" />
+  <polygon points="256,134 258,138 262,138 259,141 260,145 256,143 252,145 253,141 250,138 254,138" fill="#ffffff" stroke="#000000" stroke-width="1" />
+
+  <!-- Al-Qur'an / Book inside crescent moon -->
+  <polygon points="246,310 256,318 266,310 260,305 252,305" fill="#d1d5db" stroke="#000000" stroke-width="3" />
+  <path d="M 256,303 C 244,288 234,295 234,303 L 256,303 Z" fill="#ffffff" stroke="#000000" stroke-width="3" />
+  <path d="M 256,303 C 268,288 278,295 278,303 L 256,303 Z" fill="#ffffff" stroke="#000000" stroke-width="3" />
+  <line x1="256" y1="293" x2="256" y2="303" stroke="#000000" stroke-width="2" />
+
+  <!-- Arab Al-Khairaat script approximate representation styled beautifully inside moon -->
+  <text x="256" y="347" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="900" fill="#000000" text-anchor="middle" direction="rtl">الخيرات</text>
+
+  <!-- Ribbon at bottom with AL KHAIRAAT -->
+  <path d="M 130,375 L 140,355 Q 256,415 372,355 L 382,375 Q 256,435 130,375 Z" fill="#ffffff" stroke="#000000" stroke-width="4" stroke-linejoin="round" />
+  <polygon points="130,375 140,355 120,345 110,365" fill="#ffffff" stroke="#000000" stroke-width="3" />
+  <polygon points="382,375 372,355 392,345 402,365" fill="#ffffff" stroke="#000000" stroke-width="3" />
+
+  <!-- Ribbon Text Path -->
+  <path d="M 130,387 Q 256,447 382,387" fill="none" stroke="none" id="ribbonPath" />
+  <text font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="900" fill="#000000" letter-spacing="3" text-anchor="middle">
+    <textPath href="#ribbonPath" startOffset="50%">AL KHAIRAAT</textPath>
+  </text>
+  
+  <!-- Horizontal line decoration inside -->
+  <line x1="104" y1="220" x2="166" y2="220" stroke="#000000" stroke-width="3" />
+  <line x1="346" y1="220" x2="408" y2="220" stroke="#000000" stroke-width="3" stroke-linecap="round" />
+</svg>
