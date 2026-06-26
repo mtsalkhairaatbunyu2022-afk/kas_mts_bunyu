@@ -119,25 +119,32 @@ export default function App() {
   const [isAppInstalled, setIsAppInstalled] = useState(false);
 
   useEffect(() => {
-    // Suppress benign sandbox errors (like Vite HMR websocket failures)
+    // Suppress benign sandbox errors (like Vite HMR websocket failures and generic Script error)
     const originalError = window.console.error;
     window.console.error = (...args) => {
-      if (typeof args[0] === 'string' && (args[0].includes('websocket') || args[0].includes('Vite'))) {
+      if (typeof args[0] === 'string' && (args[0].includes('websocket') || args[0].includes('Vite') || args[0].includes('Script error'))) {
         return;
       }
       originalError.apply(window.console, args);
     };
 
+    const handleGlobalError = (event: ErrorEvent) => {
+      if (event.message === 'Script error.' || event.message.includes('websocket')) {
+        event.stopImmediatePropagation();
+        return false;
+      }
+    };
+    window.addEventListener('error', handleGlobalError);
+
     // Register Service Worker for PWA (Offline Support)
     const registerSW = () => {
-      // Only register on production domains, not on AI Studio dev/preview sandboxes or localhost
-      const isSandbox = window.location.hostname.includes('ais-dev') || 
-                        window.location.hostname.includes('ais-pre') || 
-                        window.location.hostname === 'localhost';
-      
-      if ('serviceWorker' in navigator && !isSandbox) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('SW registered:', reg.scope))
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(reg => {
+            console.log('SW registered:', reg.scope);
+            // Check for updates periodically
+            reg.update();
+          })
           .catch(err => console.log('SW registration failed:', err));
       }
     };
@@ -171,9 +178,11 @@ export default function App() {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
+      window.removeEventListener('error', handleGlobalError);
       window.removeEventListener('load', registerSW);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
       window.removeEventListener('appinstalled', handleAppInstalled);
+      window.console.error = originalError;
     };
   }, []);
 
