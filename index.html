@@ -15,17 +15,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="KAS MTS BUNYU" />
     <link rel="apple-touch-icon" href="/logo.svg" />
-
-    <!-- Service Worker Registration -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('PWA ServiceWorker registered successfully!', reg.scope))
-            .catch(err => console.error('PWA ServiceWorker registration failed:', err));
-        });
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>

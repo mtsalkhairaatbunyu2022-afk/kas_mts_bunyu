@@ -21,8 +21,7 @@ import {
   FileSpreadsheet,
   Table,
   CircleDollarSign,
-  Smartphone,
-  Laptop
+  Smartphone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -120,14 +119,45 @@ export default function App() {
   const [isAppInstalled, setIsAppInstalled] = useState(false);
 
   useEffect(() => {
+    // Suppress benign sandbox errors (like Vite HMR websocket failures)
+    const originalError = window.console.error;
+    window.console.error = (...args) => {
+      if (typeof args[0] === 'string' && (args[0].includes('websocket') || args[0].includes('Vite'))) {
+        return;
+      }
+      originalError.apply(window.console, args);
+    };
+
+    // Register Service Worker for PWA (Offline Support)
+    const registerSW = () => {
+      // Only register on production domains, not on AI Studio dev/preview sandboxes or localhost
+      const isSandbox = window.location.hostname.includes('ais-dev') || 
+                        window.location.hostname.includes('ais-pre') || 
+                        window.location.hostname === 'localhost';
+      
+      if ('serviceWorker' in navigator && !isSandbox) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.log('SW registration failed:', err));
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      registerSW();
+    } else {
+      window.addEventListener('load', registerSW);
+    }
+
     const handleBeforeInstall = (e: Event) => {
+      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
+      // Stash the event so it can be triggered later.
       setDeferredPrompt(e);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    // Check display mode
+    // Check display mode to see if already installed
     if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true) {
       setIsAppInstalled(true);
     }
@@ -135,12 +165,13 @@ export default function App() {
     const handleAppInstalled = () => {
       setIsAppInstalled(true);
       setDeferredPrompt(null);
-      setNotification('Aplikasi KAS MTS BUNYU berhasil dipasang!');
+      setNotification('KAS MTS BUNYU telah berhasil dipasang di perangkat Anda!');
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
+      window.removeEventListener('load', registerSW);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
@@ -148,23 +179,22 @@ export default function App() {
 
   const handleInstallApp = async () => {
     if (!deferredPrompt) {
+      // Fallback instructions if prompt is not available (e.g. on iOS or if already dismissed)
       triggerAlert(
-        'Petunjuk Pasang / Install Aplikasi',
-        'Untuk memasang aplikasi "KAS MTS BUNYU" agar bisa diakses langsung dari layar utama HP atau Laptop:\n\n' +
-        '1. DI HP ANDROID / LAPTOP (Chrome/Edge):\n' +
-        '   - Klik tombol titik tiga di kanan atas browser Anda.\n' +
-        '   - Klik menu "Install Aplikasi" atau "Pasang Aplikasi" atau "Tambahkan ke Layar Utama".\n\n' +
-        '2. DI IPHONE / IPAD (Safari):\n' +
-        '   - Klik tombol "Berbagi / Share" (ikon kotak dengan panah ke atas) di luar menu ini (browser).\n' +
-        '   - Gulir ke bawah lalu ketuk "Tambahkan ke Layar Utama" (Add to Home Screen).\n\n' +
-        'Setelah dipasang, aplikasi ini dapat dibuka tanpa koneksi internet (Offline), dan langsung full-screen bersih tanpa ribbon/baris browser web.'
+        'Panduan Pemasangan',
+        'Gunakan menu browser (titik tiga) lalu pilih "Instal Aplikasi" atau "Tambahkan ke Layar Utama" untuk pengalaman layar penuh tanpa browser bar.'
       );
       return;
     }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User accepted prompt? ${outcome}`);
-    setDeferredPrompt(null);
+    // Show the install prompt
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to install prompt: ${outcome}`);
+      // We've used the prompt, and can't use it again
+      setDeferredPrompt(null);
+    }
   };
 
   // Sync state helpers
@@ -630,13 +660,14 @@ export default function App() {
             
             {/* Elegant PWA Install Button */}
             {!isAppInstalled && (
-              <button
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
                 onClick={handleInstallApp}
-                className="py-1.5 px-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shadow-indigo-600/10"
-                title="Pasang Aplikasi KAS MTS BUNYU di HP atau Laptop"
+                className="py-1.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-indigo-600/30 ring-2 ring-white"
               >
-                <Smartphone className="w-3.5 h-3.5 animate-pulse" /> Pasang Aplikasi
-              </button>
+                <Smartphone className="w-3.5 h-3.5" /> Pasang Aplikasi
+              </motion.button>
             )}
 
             <button
